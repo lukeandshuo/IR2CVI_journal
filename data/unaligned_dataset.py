@@ -11,7 +11,7 @@ class UnalignedDataset(BaseDataset):
         self.opt = opt
         self.root = opt.dataroot
         ###TODO dataset dir has been modified
-        self.dir_A = os.path.join(opt.dataroot, opt.phase, 'night_mwir')
+        self.dir_A = os.path.join(opt.dataroot, opt.phase, 'night_ir')
         self.dir_B = os.path.join(opt.dataroot, opt.phase, 'day_visible')
 
 
@@ -36,7 +36,7 @@ class UnalignedDataset(BaseDataset):
         self.B_size = len(self.B_paths)
         self.transform = get_transform(opt)
 
-        self.dir_A_bboxes = os.path.join(opt.dataroot,'annotation',opt.phase,'night_mwir')
+        self.dir_A_bboxes = os.path.join(opt.dataroot,'annotation',opt.phase,'night_ir')
         self.dir_B_bboxes = os.path.join(opt.dataroot,'annotation',opt.phase,'day_visible')
 
         self.A_bboxes_paths = make_dataset(self.dir_A_bboxes)
@@ -45,7 +45,7 @@ class UnalignedDataset(BaseDataset):
         self.A_bboxes_paths = sorted(self.A_bboxes_paths)
         self.B_bboxes_paths = sorted(self.B_bboxes_paths)
 
-    def bboxes_parser(self,path):
+    def sensiac_bboxes_parser(self,path):
         res = []
         with open(path) as f:
             for line in f:
@@ -63,6 +63,33 @@ class UnalignedDataset(BaseDataset):
                     y2 = float(y2)+5
                     box = np.asarray([x1, y1, x2, y2])
                     res.append(box)
+        res = np.asarray(res)
+        return res
+
+    def kaist_bboxes_parser(self,path):
+        res = []
+        with open(path) as f:
+            for line in f:
+                line = line.strip().split()
+                if line[0] == "%":
+                    continue
+                else:
+                    box = [int(i) for i in line[1:5]]
+                    ##bbox format "xywh"
+                    ## convert to "xmin,ymin, xmax, ymax"
+                    x1, y1, w, h = box
+                    x1 = float(x1)
+                    y1 = float(y1)
+                    x2 =  x1+float(w)
+                    y2 = y1+float(h)
+                    box = np.asarray([x1, y1, x2, y2])
+                    res.append(box)
+
+        ### if the number of bboxes > 1, pick up one randomly
+        num_bboxes = len(res)
+        rand = random.randint(0,num_bboxes-1)
+        res = [res[rand]]
+        # print(len(res))
         res = np.asarray(res)
         return res
 
@@ -89,8 +116,9 @@ class UnalignedDataset(BaseDataset):
         if self.opt.isTrain:
             A_bboxes_path = self.A_bboxes_paths[index_A]
             B_bboxes_path = self.B_bboxes_paths[index_B]
-            A_bboxes = self.bboxes_parser(A_bboxes_path)
-            B_bboxes = self.bboxes_parser(B_bboxes_path)
+            ##TODO need to be changed, when dataset is different
+            A_bboxes = self.kaist_bboxes_parser(A_bboxes_path)
+            B_bboxes = self.kaist_bboxes_parser(B_bboxes_path)
         else:
             A_bboxes_path = []
             B_bboxes_path = []

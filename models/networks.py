@@ -274,7 +274,7 @@ class ResnetGenerator(nn.Module):
        # plt.imshow(texture_img)
 
         contour = self.skip_connection(input)
-        contour_img = util.tensor2im(self.tanh_modul(contour).data)
+        # contour_img = util.tensor2im(self.tanh_modul(contour).data)
         # cv2.imwrite("/data/Sensiac/SensiacNight/I2I_OD_Night/Imagery/demo(out)/images/ir_texture.png",texture_img)
         # cv2.imwrite("/data/Sensiac/SensiacNight/I2I_OD_Night/Imagery/demo(out)/images/ir_contour.png", contour_img)
         # cv2.imshow("texture",texture_img)

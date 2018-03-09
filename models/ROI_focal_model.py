@@ -129,8 +129,8 @@ class ROIFocalModel(BaseModel):
         self.rec_A = self.netG_B(fake_B).data
         self.fake_B = fake_B.data
 
-        rec_img = util.tensor2im(self.rec_A)
-        cv2.imwrite("/data/Sensiac/SensiacNight/I2I_OD_Night/Imagery/demo(out)/images/rec_img.png",rec_img)
+        # rec_img = util.tensor2im(self.rec_A)
+        # cv2.imwrite("/data/Sensiac/SensiacNight/I2I_OD_Night/Imagery/demo(out)/images/rec_img.png",rec_img)
 
         real_B = Variable(self.input_B, volatile=True)
         fake_A = self.netG_B(real_B)
