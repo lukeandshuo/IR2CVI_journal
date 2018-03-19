@@ -16,7 +16,7 @@ class UnalignedDataset(BaseDataset):
 
 
         ####TODO: note this is for sensiac night object detection
-        if opt.phase == 'test':
+        if opt.phase == 'real_translation':
             # name_list_dir = "/data/Sensiac/SensiacNight/Train_Test/IR/test.txt"
             # name_list = []
             # with open(name_list_dir,'r') as f:
@@ -80,17 +80,22 @@ class UnalignedDataset(BaseDataset):
                     x1, y1, w, h = box
                     x1 = float(x1)
                     y1 = float(y1)
-                    x2 =  x1+float(w)
-                    y2 = y1+float(h)
+                    x2 = np.minimum(639.0,x1+float(w))
+                    y2 = np.minimum(511.0,y1+float(h))
                     box = np.asarray([x1, y1, x2, y2])
                     res.append(box)
 
         ### if the number of bboxes > 1, pick up one randomly
         num_bboxes = len(res)
+        if num_bboxes == 0:
+            print("res == 0, errrrrrrror!")
         rand = random.randint(0,num_bboxes-1)
         res = [res[rand]]
         # print(len(res))
+        # tmp_value = [np.asarray([ 547. ,208. ,639. ,511.])]
         res = np.asarray(res)
+        print(res)
+        # print("------------")
         return res
 
 

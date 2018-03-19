@@ -218,7 +218,7 @@ class RandomSampleCrop_FixedSize(object):
         image = np.array(image)
         height, width, _ = image.shape
 
-        min_iou, max_iou = (0.9,float('inf'))
+        min_iou, max_iou = (0.6,float('inf'))
 
         # max trails (50)
         while True:

@@ -269,7 +269,7 @@ class ResnetGenerator(nn.Module):
             texture= self.model(input)
 
         # texture_img = texture.cpu().data.numpy()[0,0,:,:]
-        texture_img= util.tensor2im(self.tanh_modul(texture).data)
+        # texture_img= util.tensor2im(self.tanh_modul(texture).data)
 
        # plt.imshow(texture_img)
 
